@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+    @apply bg-transparent;
+    @apply text-gray-900 dark:text-white;
+  }
+  
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Mac风格按钮 */
+  .btn-primary {
+    @apply px-6 py-2.5 bg-mac-blue text-white rounded-lg;
+    @apply hover:bg-blue-600 active:scale-95;
+    @apply transition-all duration-150;
+    @apply font-medium shadow-sm;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-mac-gray-100 dark:bg-mac-gray-700 text-gray-900 dark:text-white rounded-lg;
+    @apply hover:bg-mac-gray-200 dark:hover:bg-mac-gray-600 active:scale-95;
+    @apply transition-all duration-150;
+    @apply font-medium;
+  }
+
+  .btn-danger {
+    @apply px-6 py-2.5 bg-red-500 text-white rounded-lg;
+    @apply hover:bg-red-600 active:scale-95;
+    @apply transition-all duration-150;
+    @apply font-medium shadow-sm;
+  }
+
+  /* 输入框样式 */
+  .input-mac {
+    @apply px-4 py-2 rounded-lg border border-mac-gray-300 dark:border-mac-gray-600;
+    @apply bg-white dark:bg-mac-gray-800;
+    @apply focus:outline-none focus:ring-2 focus:ring-mac-blue;
+    @apply transition-all;
+  }
+
+  /* 单选按钮样式 */
+  .radio-mac {
+    @apply w-5 h-5 text-mac-blue focus:ring-mac-blue focus:ring-2;
+  }
+
+  /* 拖拽区域 */
+  .drop-zone {
+    @apply border-2 border-dashed border-mac-gray-300 dark:border-mac-gray-600 rounded-xl;
+    @apply transition-all duration-200;
+  }
+
+  .drop-zone.active {
+    @apply border-mac-blue bg-blue-50 dark:bg-blue-900/20;
+  }
+
+  /* 进度条 */
+  .progress-bar {
+    @apply h-2 bg-mac-blue rounded-full;
+    @apply transition-all duration-300;
+  }
+}
+
+/* Mac毛玻璃效果 */
+.mac-window {
+  @apply backdrop-blur-mac;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.dark .mac-window {
+  background: rgba(28, 28, 30, 0.7);
+}
+
+/* 可拖动区域 */
+.draggable-area {
+  -webkit-app-region: drag;
+}
+
+/* 按钮和交互元素不可拖动 */
+button, input, a, [role="button"] {
+  -webkit-app-region: no-drag;
+}
+
+/* 平滑动画 */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-mac-gray-400 dark:bg-mac-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-mac-gray-500 dark:bg-mac-gray-500;
+}
+
