@@ -81,16 +81,38 @@ export async function compressVideo(
       let startTime = Date.now()
       let lastUpdateTime = 0
 
+      const maxrate = Math.floor(params.targetBitrate * 1.2)  // 最大码率为目标的120%
+      const bufsize = Math.floor(params.targetBitrate * 2)   // 缓冲区大小为目标的2倍
+      
+      // QuickTime 兼容性配置
+      const videoOptions = [
+        `-preset ${preset}`,
+        '-movflags +faststart',
+        '-pix_fmt yuv420p',
+        `-maxrate ${maxrate}k`,
+        `-bufsize ${bufsize}k`
+      ]
+      
+      // H.264 添加 profile 确保 QuickTime 兼容
+      if (params.codec === 'h264') {
+        videoOptions.push('-profile:v high', '-level 4.1')
+      }
+      
+      // H.265 添加 tag 确保兼容性
+      if (params.codec === 'h265') {
+        videoOptions.push('-tag:v hvc1')  // 使用 hvc1 tag 而不是 hev1
+      }
+      
       currentFFmpegCommand = ffmpeg(params.inputPath)
         .videoCodec(codecLib)
-        .videoBitrate(params.targetBitrate)
-        .outputOptions([
-          `-preset ${preset}`,
-          '-movflags +faststart' // 优化网络播放
-        ])
+        .videoBitrate(`${params.targetBitrate}k`)
+        .outputOptions(videoOptions)
         .audioCodec('aac')
         .audioBitrate('128k')
+        .audioChannels(2)
+        .audioFrequency(48000)  // 改为 48kHz，QuickTime 更兼容
         .output(params.outputPath)
+        .format('mp4')  // 明确指定 MP4 格式
         .on('progress', (progressData) => {
           const currentTime = progressData.timemark ? parseTimemark(progressData.timemark) : 0
           const percent = Math.min((currentTime / duration) * 100, 100)

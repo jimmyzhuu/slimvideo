@@ -67,7 +67,10 @@ function App() {
     let targetBitrate: number
     if (params.targetSize) {
       // 目标文件大小方式 (MB转换为kbps)
-      targetBitrate = Math.floor((params.targetSize * 8 * 1024) / videoData.duration) - 128
+      // 公式：(目标大小MB * 8 * 1024) / 时长秒 = 总码率kbps
+      // 减去音频码率128kbps，再增加10%缓冲以达到目标大小
+      const totalBitrate = (params.targetSize * 8 * 1024) / videoData.duration
+      targetBitrate = Math.floor((totalBitrate - 128) * 1.1)  // 增加10%补偿
     } else if (params.compressionRatio) {
       // 压缩比例方式
       targetBitrate = Math.floor(videoData.bitrate * (params.compressionRatio / 100))

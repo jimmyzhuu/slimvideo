@@ -23,6 +23,12 @@ export default function CompressSettings({ videoData, onStartCompress }: Compres
   const [estimatedSize, setEstimatedSize] = useState(0)
   const [estimatedSaved, setEstimatedSaved] = useState(0)
 
+  // 设置默认值：视频大小的50%
+  useEffect(() => {
+    const defaultSize = Math.round((videoData.size / (1024 * 1024)) * 0.5) // 50%的大小，单位MB
+    setTargetSize(defaultSize.toString())
+  }, [videoData.size])
+
   useEffect(() => {
     if (mode === 'size' && targetSize) {
       const size = parseFloat(targetSize)
