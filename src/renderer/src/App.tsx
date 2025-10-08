@@ -35,7 +35,9 @@ function App() {
     // 显示加载状态
     setState('compressing') // 临时使用压缩状态显示加载
     
+    console.log('Loading video:', filePath)
     const result = await window.electronAPI.getVideoInfo(filePath)
+    console.log('Video info result:', result)
     
     if (result.success && result.data) {
       setVideoData({
@@ -50,6 +52,9 @@ function App() {
       })
       setState('video-loaded')
     } else {
+      console.error('Failed to get video info:', result.error)
+      // 显示错误信息
+      alert(`无法获取视频信息: ${result.error || '未知错误'}`)
       setState('idle')
     }
   }

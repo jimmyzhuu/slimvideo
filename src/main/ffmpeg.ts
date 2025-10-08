@@ -1,9 +1,48 @@
 import ffmpeg from 'fluent-ffmpeg'
 import { promisify } from 'util'
 import { exec } from 'child_process'
-import { basename } from 'path'
+import { basename, join } from 'path'
+import { app } from 'electron'
+import { existsSync } from 'fs'
 
-const execAsync = promisify(exec)
+// 设置 FFmpeg 路径
+function setupFFmpegPaths() {
+  try {
+    let ffmpegPath: string
+    let ffprobePath: string
+
+    if (app.isPackaged) {
+      // 在打包后的应用中，使用相对于应用资源的路径
+      const resourcesPath = process.resourcesPath
+      ffmpegPath = join(resourcesPath, 'app.asar.unpacked', 'node_modules', 'ffmpeg-static', 'ffmpeg')
+      ffprobePath = join(resourcesPath, 'app.asar.unpacked', 'node_modules', 'ffprobe-static', 'bin', 'darwin', 'arm64', 'ffprobe')
+      
+      // 如果上述路径不存在，尝试其他可能的路径
+      if (!existsSync(ffmpegPath)) {
+        ffmpegPath = join(resourcesPath, 'node_modules', 'ffmpeg-static', 'ffmpeg')
+      }
+      if (!existsSync(ffprobePath)) {
+        ffprobePath = join(resourcesPath, 'node_modules', 'ffprobe-static', 'bin', 'darwin', 'arm64', 'ffprobe')
+      }
+    } else {
+      // 在开发环境中，使用 require 获取路径
+      ffmpegPath = require('ffmpeg-static')
+      ffprobePath = require('ffprobe-static').path
+    }
+
+    console.log('Setting FFmpeg paths:', { ffmpegPath, ffprobePath })
+    console.log('FFmpeg exists:', existsSync(ffmpegPath))
+    console.log('FFprobe exists:', existsSync(ffprobePath))
+
+    ffmpeg.setFfmpegPath(ffmpegPath)
+    ffmpeg.setFfprobePath(ffprobePath)
+  } catch (error) {
+    console.error('FFmpeg setup error:', error)
+  }
+}
+
+// 初始化 FFmpeg 路径
+setupFFmpegPaths()
 
 // 视频信息接口
 export interface VideoInfo {
@@ -173,6 +212,7 @@ function parseTimemark(timemark: string): number {
 // 检查FFmpeg是否已安装
 export async function checkFFmpegInstalled(): Promise<boolean> {
   try {
+    const execAsync = promisify(exec)
     await execAsync('ffmpeg -version')
     return true
   } catch {

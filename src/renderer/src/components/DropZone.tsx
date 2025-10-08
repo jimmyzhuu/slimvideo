@@ -41,7 +41,15 @@ export default function DropZone({ onFileLoaded }: DropZoneProps) {
       return
     }
 
-    onFileLoaded(file.path)
+    // 检查文件路径是否存在
+    const filePath = (file as any).path
+    if (!filePath) {
+      setError('无法获取文件路径，请尝试点击选择文件')
+      setTimeout(() => setError(null), 3000)
+      return
+    }
+
+    onFileLoaded(filePath)
   }, [onFileLoaded])
 
   const handleClick = async () => {

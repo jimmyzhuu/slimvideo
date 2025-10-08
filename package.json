@@ -17,6 +17,8 @@
     "build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
+    "ffmpeg-static": "^5.2.0",
+    "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -46,7 +48,9 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64", "universal"]
+          "arch": [
+            "arm64"
+          ]
         }
       ],
       "icon": "resources/icon.icns",
@@ -65,7 +69,10 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ],
       "icon": "resources/icon.ico"
@@ -85,9 +92,13 @@
       "category": "Video"
     },
     "files": [
-      "dist-electron/**/*",
-      "dist/**/*"
+      "out/**/*",
+      "node_modules/ffmpeg-static/**/*",
+      "node_modules/ffprobe-static/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**/*",
+      "node_modules/ffprobe-static/**/*"
     ]
   }
 }
-
